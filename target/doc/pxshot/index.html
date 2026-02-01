@@ -1,0 +1,95 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Pxshot"><title>pxshot - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-aa0817cf.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="pxshot" data-themes="" data-resource-suffix="" data-rustdoc-version="1.90.0 (1159e78c4 2025-09-14)" data-channel="1.90.0" data-search-js="search-fa3e91e5.js" data-settings-js="settings-5514c975.js" ><script src="../static.files/storage-68b7e25d.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-eebb9057.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-32bb7600.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../pxshot/index.html">pxshot</a><span class="version">0.1.0</span></h2></div><div class="sidebar-elems"><ul class="block"><li><a id="all-types" href="all.html">All Items</a></li></ul><section id="rustdoc-toc"><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#pxshot" title="Pxshot">Pxshot</a><ul><li><a href="#features" title="Features">Features</a></li><li><a href="#quick-start" title="Quick Start">Quick Start</a></li><li><a href="#storing-screenshots" title="Storing Screenshots">Storing Screenshots</a></li><li><a href="#blocking-client" title="Blocking Client">Blocking Client</a></li><li><a href="#usage-statistics" title="Usage Statistics">Usage Statistics</a></li></ul></li></ul><h3><a href="#structs">Crate Items</a></h3><ul class="block"><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#enums" title="Enums">Enums</a></li><li><a href="#types" title="Type Aliases">Type Aliases</a></li></ul></section><div id="rustdoc-modnav"></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1>Crate <span>pxshot</span><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/pxshot/lib.rs.html#1-135">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="pxshot"><a class="doc-anchor" href="#pxshot">§</a>Pxshot</h2>
+<p>Official Rust SDK for the <a href="https://pxshot.com">Pxshot</a> screenshot API.</p>
+<h3 id="features"><a class="doc-anchor" href="#features">§</a>Features</h3>
+<ul>
+<li><strong>Async-first</strong>: Built on <code>tokio</code> and <code>reqwest</code> for high-performance async I/O</li>
+<li><strong>Strongly typed</strong>: Full type safety with serde serialization</li>
+<li><strong>Builder pattern</strong>: Ergonomic request construction</li>
+<li><strong>Optional blocking client</strong>: Enable with the <code>blocking</code> feature</li>
+</ul>
+<h3 id="quick-start"><a class="doc-anchor" href="#quick-start">§</a>Quick Start</h3>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>pxshot::{Pxshot, ScreenshotRequest, ImageFormat};
+
+<span class="attr">#[tokio::main]
+</span><span class="kw">async fn </span>main() -&gt; pxshot::Result&lt;()&gt; {
+    <span class="comment">// Create client with your API key
+    </span><span class="kw">let </span>client = Pxshot::new(<span class="string">"px_your_api_key"</span>);
+
+    <span class="comment">// Capture a screenshot as bytes
+    </span><span class="kw">let </span>response = client
+        .screenshot(
+            ScreenshotRequest::builder()
+                .url(<span class="string">"https://example.com"</span>)
+                .format(ImageFormat::Png)
+                .width(<span class="number">1920</span>)
+                .height(<span class="number">1080</span>)
+                .build()<span class="question-mark">?</span>,
+        )
+        .<span class="kw">await</span><span class="question-mark">?</span>;
+
+    <span class="comment">// Get the image bytes
+    </span><span class="kw">let </span>bytes = response.into_bytes().unwrap();
+    std::fs::write(<span class="string">"screenshot.png"</span>, bytes)<span class="question-mark">?</span>;
+
+    <span class="prelude-val">Ok</span>(())
+}</code></pre></div>
+<h3 id="storing-screenshots"><a class="doc-anchor" href="#storing-screenshots">§</a>Storing Screenshots</h3>
+<p>Instead of receiving raw bytes, you can store screenshots and get a URL:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>pxshot::{Pxshot, ScreenshotRequest};
+
+<span class="attr">#[tokio::main]
+</span><span class="kw">async fn </span>main() -&gt; pxshot::Result&lt;()&gt; {
+    <span class="kw">let </span>client = Pxshot::new(<span class="string">"px_your_api_key"</span>);
+
+    <span class="kw">let </span>response = client
+        .screenshot(
+            ScreenshotRequest::builder()
+                .url(<span class="string">"https://example.com"</span>)
+                .store(<span class="bool-val">true</span>)
+                .build()<span class="question-mark">?</span>,
+        )
+        .<span class="kw">await</span><span class="question-mark">?</span>;
+
+    <span class="kw">let </span>stored = response.into_stored().unwrap();
+    <span class="macro">println!</span>(<span class="string">"Screenshot URL: {}"</span>, stored.url);
+    <span class="macro">println!</span>(<span class="string">"Expires at: {}"</span>, stored.expires_at);
+
+    <span class="prelude-val">Ok</span>(())
+}</code></pre></div>
+<h3 id="blocking-client"><a class="doc-anchor" href="#blocking-client">§</a>Blocking Client</h3>
+<p>Enable the <code>blocking</code> feature in your <code>Cargo.toml</code>:</p>
+<div class="example-wrap"><pre class="language-toml"><code>[dependencies]
+pxshot = { version = &quot;0.1&quot;, features = [&quot;blocking&quot;] }</code></pre></div>
+<p>Then use the blocking client:</p>
+
+<div class="example-wrap ignore"><a href="#" class="tooltip" title="This example is not tested">ⓘ</a><pre class="rust rust-example-rendered"><code><span class="kw">use </span>pxshot::blocking::Pxshot;
+<span class="kw">use </span>pxshot::ScreenshotRequest;
+
+<span class="kw">fn </span>main() -&gt; pxshot::Result&lt;()&gt; {
+    <span class="kw">let </span>client = Pxshot::new(<span class="string">"px_your_api_key"</span>);
+
+    <span class="kw">let </span>response = client.screenshot(
+        ScreenshotRequest::builder()
+            .url(<span class="string">"https://example.com"</span>)
+            .build()<span class="question-mark">?</span>,
+    )<span class="question-mark">?</span>;
+
+    <span class="prelude-val">Ok</span>(())
+}</code></pre></div>
+<h3 id="usage-statistics"><a class="doc-anchor" href="#usage-statistics">§</a>Usage Statistics</h3>
+<p>Check your API usage:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>pxshot::Pxshot;
+
+<span class="attr">#[tokio::main]
+</span><span class="kw">async fn </span>main() -&gt; pxshot::Result&lt;()&gt; {
+    <span class="kw">let </span>client = Pxshot::new(<span class="string">"px_your_api_key"</span>);
+
+    <span class="kw">let </span>usage = client.usage().<span class="kw">await</span><span class="question-mark">?</span>;
+    <span class="macro">println!</span>(<span class="string">"Screenshots this period: {}"</span>, usage.screenshots);
+    <span class="macro">println!</span>(<span class="string">"Bytes used: {}"</span>, usage.bytes);
+
+    <span class="prelude-val">Ok</span>(())
+}</code></pre></div>
+</div></details><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><dl class="item-table"><dt><a class="struct" href="struct.Pxshot.html" title="struct pxshot::Pxshot">Pxshot</a></dt><dd>Pxshot API client.</dd><dt><a class="struct" href="struct.ScreenshotRequest.html" title="struct pxshot::ScreenshotRequest">Screenshot<wbr>Request</a></dt><dd>Request to capture a screenshot.</dd><dt><a class="struct" href="struct.ScreenshotRequestBuilder.html" title="struct pxshot::ScreenshotRequestBuilder">Screenshot<wbr>Request<wbr>Builder</a></dt><dd>Builder for <a href="struct.ScreenshotRequest.html" title="struct pxshot::ScreenshotRequest"><code>ScreenshotRequest</code></a>.</dd><dt><a class="struct" href="struct.StoredScreenshot.html" title="struct pxshot::StoredScreenshot">Stored<wbr>Screenshot</a></dt><dd>Response when storing a screenshot (store=true).</dd><dt><a class="struct" href="struct.Usage.html" title="struct pxshot::Usage">Usage</a></dt><dd>API usage statistics.</dd></dl><h2 id="enums" class="section-header">Enums<a href="#enums" class="anchor">§</a></h2><dl class="item-table"><dt><a class="enum" href="enum.Error.html" title="enum pxshot::Error">Error</a></dt><dd>Errors that can occur when using the Pxshot SDK.</dd><dt><a class="enum" href="enum.ImageFormat.html" title="enum pxshot::ImageFormat">Image<wbr>Format</a></dt><dd>Image format for screenshots.</dd><dt><a class="enum" href="enum.ScreenshotResponse.html" title="enum pxshot::ScreenshotResponse">Screenshot<wbr>Response</a></dt><dd>Result of a screenshot request.</dd><dt><a class="enum" href="enum.WaitUntil.html" title="enum pxshot::WaitUntil">Wait<wbr>Until</a></dt><dd>When to consider the page loaded.</dd></dl><h2 id="types" class="section-header">Type Aliases<a href="#types" class="anchor">§</a></h2><dl class="item-table"><dt><a class="type" href="type.Result.html" title="type pxshot::Result">Result</a></dt><dd>Result type alias using the Pxshot error type.</dd></dl></section></div></main></body></html>
