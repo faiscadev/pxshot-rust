@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Error","ImageFormat","ScreenshotResponse","WaitUntil"],"struct":["Pxshot","ScreenshotRequest","ScreenshotRequestBuilder","StoredScreenshot","Usage"],"type":["Result"]};

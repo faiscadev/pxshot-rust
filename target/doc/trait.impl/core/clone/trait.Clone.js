@@ -1,9 +1,0 @@
-(function() {
-    var implementors = Object.fromEntries([["pxshot",[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.90.0/core/clone/trait.Clone.html\" title=\"trait core::clone::Clone\">Clone</a> for <a class=\"enum\" href=\"pxshot/enum.ImageFormat.html\" title=\"enum pxshot::ImageFormat\">ImageFormat</a>"],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.90.0/core/clone/trait.Clone.html\" title=\"trait core::clone::Clone\">Clone</a> for <a class=\"enum\" href=\"pxshot/enum.WaitUntil.html\" title=\"enum pxshot::WaitUntil\">WaitUntil</a>"],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.90.0/core/clone/trait.Clone.html\" title=\"trait core::clone::Clone\">Clone</a> for <a class=\"struct\" href=\"pxshot/struct.Pxshot.html\" title=\"struct pxshot::Pxshot\">Pxshot</a>"],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.90.0/core/clone/trait.Clone.html\" title=\"trait core::clone::Clone\">Clone</a> for <a class=\"struct\" href=\"pxshot/struct.ScreenshotRequest.html\" title=\"struct pxshot::ScreenshotRequest\">ScreenshotRequest</a>"],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.90.0/core/clone/trait.Clone.html\" title=\"trait core::clone::Clone\">Clone</a> for <a class=\"struct\" href=\"pxshot/struct.StoredScreenshot.html\" title=\"struct pxshot::StoredScreenshot\">StoredScreenshot</a>"],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.90.0/core/clone/trait.Clone.html\" title=\"trait core::clone::Clone\">Clone</a> for <a class=\"struct\" href=\"pxshot/struct.Usage.html\" title=\"struct pxshot::Usage\">Usage</a>"]]]]);
-    if (window.register_implementors) {
-        window.register_implementors(implementors);
-    } else {
-        window.pending_implementors = implementors;
-    }
-})()
-//{"start":57,"fragment_lengths":[1554]}
