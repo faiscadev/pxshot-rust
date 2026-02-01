@@ -9,27 +9,10 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    environment: crates-io
-    permissions:
-      contents: read
-      id-token: write
     steps:
       - uses: actions/checkout@v4
       
       - uses: dtolnay/rust-toolchain@stable
       
-      - name: Authenticate with crates.io
-        run: |
-          # Get OIDC token and exchange for crates.io token
-          OIDC_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=crates.io" \
-            -H "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
-            -H "Accept: application/json" | jq -r '.value')
-          
-          CRATES_TOKEN=$(curl -sLS "https://crates.io/api/v1/trusted_publishing/tokens" \
-            -H "Authorization: bearer ${OIDC_TOKEN}" \
-            -H "Accept: application/json" | jq -r '.token')
-          
-          cargo login "${CRATES_TOKEN}"
-      
-      - name: Publish
-        run: cargo publish
+      - name: Publish to crates.io
+        run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
